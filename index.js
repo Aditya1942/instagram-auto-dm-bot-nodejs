@@ -10,7 +10,7 @@ const { DateTime } = require("luxon");
 process.env.TZ = 'Asia/Calcutta'
 global.con=db;
 dotenv.config("./.env");
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4001;
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
