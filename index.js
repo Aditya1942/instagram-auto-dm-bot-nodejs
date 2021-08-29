@@ -116,15 +116,15 @@ const getFriends = async (callback) => {
     Bday = Bday.toFormat("x");
     Today = Today.toFormat("x");
     let days = Math.ceil((Bday - Today) / (1000 * 60 * 60 * 24));
+    let msg;
     if (days < 0) {
       console.log((days += 365));
-      let msg = `hey ${(days += 365)} days left for your birthday thank you`;
-      // dailyTest(msg);
+      msg = `hey ${(days += 365)} days left for your birthday thank you`;
     } else {
-      let msg = `hey ${days} days left for your birthday thank you`;
-      // dailyTest(msg);
+      msg = `hey ${days} days left for your birthday thank you`;
       console.log(days);
     }
+    dailyTest(msg);
   };
 
   cron.schedule(" 0 0 * * * ", function () {
