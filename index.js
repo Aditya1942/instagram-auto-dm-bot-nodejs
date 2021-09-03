@@ -146,7 +146,8 @@ const getFriends = async (callback) => {
             Today.toFormat("dd") == Bday.toFormat("dd")
           ) {
             // if birthday is today then wish that  friend
-            // wish(element.username);
+            console.log("Wishing " + element.fullname);
+            wish(element.username);
           }
         }, index * 2000);
       });
@@ -168,8 +169,6 @@ app.get("/all", async (req, res) => {
 
       result: result,
     });
-
-    console.log(result);
   });
 });
 
