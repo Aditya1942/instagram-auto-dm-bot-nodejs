@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import { IgApiClient, IgLoginTwoFactorRequiredError } from '../src';
+import { IgApiClient, IgLoginTwoFactorRequiredError } from '..';
 import * as Bluebird from 'bluebird';
 import inquirer = require('inquirer');
 

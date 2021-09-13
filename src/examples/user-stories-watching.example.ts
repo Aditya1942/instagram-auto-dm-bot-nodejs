@@ -1,6 +1,6 @@
 /* tslint:disable:no-console */
 import 'dotenv/config';
-import { IgApiClient } from '../src';
+import { IgApiClient } from '..';
 
 (async () => {
   const ig = new IgApiClient();

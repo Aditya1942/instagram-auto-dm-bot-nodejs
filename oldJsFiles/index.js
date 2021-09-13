@@ -36,15 +36,16 @@ const login = async () => {
       // At this point a code should have been sent
       console.log("verificationMethod :", verificationMethod);
       // Get the code
-      const { code } = await inquirer.prompt([
-        {
-          type: "input",
-          name: "code",
-          message: `Enter code received via ${
-            verificationMethod === "1" ? "SMS" : "TOTP"
-          }`,
-        },
-      ]);
+      // const { code } = await inquirer.prompt([
+      //   {
+      //     type: "input",
+      //     name: "code",
+      //     message: `Enter code received via ${
+      //       verificationMethod === "1" ? "SMS" : "TOTP"
+      //     }`,
+      //   },
+      // ]);
+      const code = process.argv[2];
       // Use the code to finish the login process
       return ig.account.twoFactorLogin({
         username,
@@ -77,86 +78,89 @@ const getFriends = async (callback) => {
     else callback(null, result);
   });
 };
+const WishReminder = () => {
+  let Bday = DateTime.fromJSDate(new Date("12/23/2001"))
+    .setZone("Asia/Calcutta")
+    .setLocale("en");
+  let Today = DateTime.now().setZone("Asia/Calcutta").setLocale("en");
+  let _ThisMonth = parseInt(Today.toFormat("MM"));
+  let _BdayMonth = parseInt(Bday.toFormat("MM"));
+  let _TodaysDay = parseInt(Today.toFormat("dd"));
+  let _Bday = parseInt(Bday.toFormat("MM"));
+
+  // birthdday yet to come this year
+  if (
+    _ThisMonth < _BdayMonth ||
+    (_ThisMonth == _BdayMonth && _TodaysDay > _Bday)
+  ) {
+    Bday = DateTime.fromJSDate(new Date(`12/23/${parseInt(Today.year)}`))
+      .setZone("Asia/Calcutta")
+      .setLocale("en");
+  } else {
+    // birthdday will come next year
+    Bday = DateTime.fromJSDate(
+      new Date(`12/23/${parseInt(Today.toFormat("yyyy")) + 1}`)
+    )
+      .setZone("Asia/Calcutta")
+      .setLocale("en");
+  }
+
+  console.log(Bday.toFormat("dd/MM/yyyy"));
+
+  Bday = Bday.toFormat("x");
+  Today = Today.toFormat("x");
+  let days = Math.ceil((Bday - Today) / (1000 * 60 * 60 * 24));
+  let msg;
+  if (days < 0) {
+    console.log((days += 365));
+    msg = `hey ${(days += 365)} days left for your birthday thank you`;
+  } else {
+    msg = `hey ${days} days left for your birthday thank you`;
+    console.log(days);
+  }
+  dailyTest(msg);
+};
 (async () => {
   const auth = await login();
   const userFeed = ig.feed.user(auth.pk);
-  const myPostsFirstPage = await userFeed.items();
+  // const myPostsFirstPage = await userFeed.items();
   console.log("instabot login successfully");
   // All the feeds are auto-paginated, so you just need to call .items() sequentially to get next page
 
-  const WishReminder = () => {
-    let Bday = DateTime.fromJSDate(new Date("12/23/2001"))
-      .setZone("Asia/Calcutta")
-      .setLocale("en");
-    let Today = DateTime.now().setZone("Asia/Calcutta").setLocale("en");
-    let _ThisMonth = parseInt(Today.toFormat("MM"));
-    let _BdayMonth = parseInt(Bday.toFormat("MM"));
-    let _TodaysDay = parseInt(Today.toFormat("dd"));
-    let _Bday = parseInt(Bday.toFormat("MM"));
-
-    // birthdday yet to come this year
-    if (
-      _ThisMonth < _BdayMonth ||
-      (_ThisMonth == _BdayMonth && _TodaysDay > _Bday)
-    ) {
-      Bday = DateTime.fromJSDate(new Date(`12/23/${parseInt(Today.year)}`))
-        .setZone("Asia/Calcutta")
-        .setLocale("en");
-    } else {
-      // birthdday will come next year
-      Bday = DateTime.fromJSDate(
-        new Date(`12/23/${parseInt(Today.toFormat("yyyy")) + 1}`)
-      )
-        .setZone("Asia/Calcutta")
-        .setLocale("en");
-    }
-
-    console.log(Bday.toFormat("dd/MM/yyyy"));
-
-    Bday = Bday.toFormat("x");
-    Today = Today.toFormat("x");
-    let days = Math.ceil((Bday - Today) / (1000 * 60 * 60 * 24));
-    let msg;
-    if (days < 0) {
-      console.log((days += 365));
-      msg = `hey ${(days += 365)} days left for your birthday thank you`;
-    } else {
-      msg = `hey ${days} days left for your birthday thank you`;
-      console.log(days);
-    }
-    dailyTest(msg);
-  };
-
-  cron.schedule(" 0 0 * * * ", function () {
-    getFriends((err, data) => {
-      data.forEach((element, index) => {
-        // 2 second gap to wish each friend individually
-        setTimeout(function () {
-          let Today = DateTime.now().setZone("Asia/Calcutta").setLocale("en");
-          let Bday = DateTime.fromJSDate(element.birthday)
-            .setZone("Asia/Calcutta")
-            .setLocale("en");
-          console.log(
-            "today",
-            Today.toFormat("t"),
-            Bday.toFormat("dd/MM/yyyy")
-          );
-          if (
-            Today.toFormat("MM") == Bday.toFormat("MM") &&
-            Today.toFormat("dd") == Bday.toFormat("dd")
-          ) {
-            // if birthday is today then wish that  friend
-            console.log("Wishing " + element.fullname);
-            wish(element.username);
-          }
-        }, index * 2000);
+  try {
+    cron.schedule(" 0 0 * * * ", function () {
+      getFriends((err, data) => {
+        data.forEach((element, index) => {
+          // 2 second gap to wish each friend individually
+          setTimeout(function () {
+            let Today = DateTime.now().setZone("Asia/Calcutta").setLocale("en");
+            let Bday = DateTime.fromJSDate(element.birthday)
+              .setZone("Asia/Calcutta")
+              .setLocale("en");
+            console.log(
+              "today",
+              Today.toFormat("t"),
+              Bday.toFormat("dd/MM/yyyy")
+            );
+            if (
+              Today.toFormat("MM") == Bday.toFormat("MM") &&
+              Today.toFormat("dd") == Bday.toFormat("dd")
+            ) {
+              // if birthday is today then wish that  friend
+              console.log("Wishing " + element.fullname);
+              wish(element.username);
+            }
+          }, index * 2000);
+        });
       });
-    });
-    // for daily test  // WishReminder("sahilhalani10");
-    WishReminder();
+      // for daily test  // WishReminder("sahilhalani10");
+      WishReminder();
 
-    console.log("Running Cron Job", DateTime.now().toFormat("t"));
-  });
+      console.log("Running Cron Job", DateTime.now().toFormat("t"));
+    });
+  } catch (error) {
+    console.log("Cron Job error", error);
+  }
 })();
 
 // database

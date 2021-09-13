@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import { IgApiClient } from '../src';
+import { IgApiClient } from '..';
 import { readFile } from 'fs';
 import { promisify } from 'util';
 const readFileAsync = promisify(readFile);

@@ -4,7 +4,7 @@
   Thanks to the developers for this great package.
  */
 import 'dotenv/config';
-import { IgApiClient, Feed } from '../src';
+import { IgApiClient, Feed } from '..';
 
 const ig = new IgApiClient();
 

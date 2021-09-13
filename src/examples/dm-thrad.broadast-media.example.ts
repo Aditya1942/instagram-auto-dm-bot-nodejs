@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import { DirectThreadEntity, IgApiClient } from '../src';
+import { DirectThreadEntity, IgApiClient } from '..';
 import { promisify } from 'util';
 import { readFile } from 'fs';
 
