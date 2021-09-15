@@ -5,50 +5,80 @@ import { DateTime } from "luxon";
 import { FriendsModel } from "src/models/friendsModel";
 
 export default class DB {
-  private dbFile = path.join("db.json");
+  public static dbFile = __dirname + "/database.json";
   private db;
-  private friends: DbModel[];
   constructor() {
-    this.db = JSON.parse(fs.readFileSync(path.join(this.dbFile), "utf8"));
-    this.friends = this.db.friends;
-    let Today = DateTime.now().setZone("Asia/Calcutta").toISO("en");
-    console.log(Today);
+    this.db = JSON.parse(fs.readFileSync(path.join(DB.dbFile), "utf8"));
   }
-   refresh() {
-    this.db = JSON.parse(fs.readFileSync(path.join(this.dbFile), "utf8"));
-    this.friends = this.db.friends;
+  refresh() {
+    this.db = JSON.parse(fs.readFileSync(path.join(DB.dbFile), "utf8"));
   }
-  get(id) {}
+  get(id) {
+    return this.db.friends.find((friend) => {
+      return friend.id === id;
+    });
+  }
   getAll() {
-    return this.friends;
+    return this.db.friends;
   }
-  async add(newFriend: FriendsModel) {
+
+  async add(newFriend: FriendsModel): Promise<FriendsModel> {
     let postFriend: DbModel = {
-      id: this.friends.length + 1,
+      id: this.db.friends.length + 1,
       ...newFriend,
       DateOfCreation: DateTime.now().setZone("Asia/Calcutta").toISO("en"),
     };
     this.db.friends.push(postFriend);
     this.save().then(() => {
-      console.log("Added");
+      this.refresh();
+      return postFriend;
+    });
+    return postFriend;
+  }
+
+  async update(id, newFriend: FriendsModel) {
+    this.db.friends.forEach((friend, i) => {
+      console.log(friend);
+      if (friend.id == id) {
+        this.db.friends[i].username = newFriend.username;
+        this.db.friends[i].fullname = newFriend.fullname;
+        this.db.friends[i].birthDate = newFriend.birthDate;
+      }
     });
 
-   
-  }
-  update(id, name) {}
-  delete(id) {}
-  async save() {
-    return new Promise(async function(resolve,reject){
-      try {
-      await  fs.writeFileSync(this.dbFile, JSON.stringify(this.db));
+    this.save()
+      .then(() => {
+        console.log("Updated");
         this.refresh();
-       resolve(this.db);
+        return newFriend;
+      })
+      .catch((err) => {
+        console.log("ERROR:", err);
+      });
+  }
+
+  async delete(id) {
+    await this.db.friends.forEach((friend, index) => {
+      if (friend.id == id) {
+        this.db.friends.splice(index, 1);
+      }
+    });
+    this.save().then(() => {
+      this.refresh();
+      return true;
+    });
+  }
+
+  async save() {
+    let data = JSON.stringify(this.db);
+    return new Promise(async function (resolve, reject) {
+      try {
+        fs.writeFileSync(DB.dbFile, data);
+        resolve(data);
       } catch (error) {
         console.error("DB.ts line 48", error);
-      reject(error);
+        reject(error);
       }
-
-  })
-
+    });
   }
 }

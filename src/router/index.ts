@@ -12,7 +12,7 @@ router.get("/", (req: Request, res: Response): void => {
 });
 
 router.post("/", (req: Request, res: Response): void => {
-  let { username, fullname, birthDate } = req.body;
+  const { username, fullname, birthDate } = req.body;
   let friend: FriendsModel = {
     username: username,
     fullname: fullname,
@@ -20,13 +20,62 @@ router.post("/", (req: Request, res: Response): void => {
       .setZone("Asia/Calcutta")
       .toFormat("yyyy-MM-dd"),
   };
+  // console.log(friend);
   db.add(friend)
+    .then((respons) => {
+      console.log("respons line 26", respons);
+      res.json({
+        success: true,
+        message: "Friend added successfully",
+        friend,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json({
+        success: false,
+        error: JSON.stringify(err),
+      });
+    });
+});
+
+router.put("/:id", (req: Request, res: Response): void => {
+  const { username, fullname, birthDate } = req.body;
+  let { id } = req.params;
+  let friend: FriendsModel = {
+    username: username,
+    fullname: fullname,
+    birthDate: DateTime.fromJSDate(new Date(birthDate))
+      .setZone("Asia/Calcutta")
+      .toFormat("yyyy-MM-dd"),
+  };
+  db.update(id, friend)
     .then((respons) => {
       console.log(respons);
       res.json({
         success: true,
-        message: "Friend added successfully",
-        data: friend,
+        message: "Friend updated successfully",
+        friend: respons,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json({
+        success: false,
+        error: JSON.stringify(err),
+      });
+    });
+});
+
+router.delete("/:id", (req: Request, res: Response): void => {
+  const { id } = req.params;
+  db.delete(id)
+    .then((respons) => {
+      console.log(respons);
+      res.json({
+        success: true,
+        message: "Friend deleted successfully",
+        friend: respons,
       });
     })
     .catch((err) => {
