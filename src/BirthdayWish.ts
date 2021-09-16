@@ -10,8 +10,6 @@ export class AutoBirthdayWish {
   log = new Log();
   constructor(ig) {
     this.ig = ig;
-    console.log(ig);
-    console.log(this.Today.toFormat("dd-MM-yyyy"), this.WishMessage);
   }
   RemaingDaysCount(BirthdayDate): any {
     let Bday = DateTime.fromJSDate(new Date(BirthdayDate))
@@ -37,12 +35,10 @@ export class AutoBirthdayWish {
         .setZone("Asia/Calcutta")
         .setLocale("en");
     }
-    console.log(Bday.toFormat("dd-MM-yyyy"));
 
     Bday = Bday.toFormat("x");
     let Today = this.Today.toFormat("x");
     let days = Math.ceil((Bday - Today) / (1000 * 60 * 60 * 24));
-    console.log(days);
     if (days < 0) {
       return (days += 365);
     } else if (days > 365) {

@@ -2,15 +2,8 @@ import fs from "fs";
 import path from "path";
 export class Log {
   private LogFile = "ErrorLogs.js";
-  Log;
-  constructor() {
-    this.Log = fs.open(path.join(this.LogFile), "a+", function (err, fd) {
-      if (err) {
-        return console.error(err);
-      }
-      console.log("File opened successfully!");
-    });
-  }
+
+  constructor() {}
   public WriteLog(Error: string) {
     let err = JSON.stringify([
       {

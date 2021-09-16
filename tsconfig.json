@@ -19,7 +19,7 @@
     "sourceMap": true,
     "allowJs": false,
     "resolveJsonModule": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": false
   },
   "exclude": ["./node_modules"]
 }
