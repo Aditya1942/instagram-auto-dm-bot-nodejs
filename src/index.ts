@@ -62,7 +62,7 @@ app.use("*", (_, res) => {
       BirthdayWish.DailyReminder(
         "aaditya_parmar_",
         `hey ${daysLeft}  days left for your birthday thank you`
-      );
+      ); // send the message to the user
     },
     {
       scheduled: true,
