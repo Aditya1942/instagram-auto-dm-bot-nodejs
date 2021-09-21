@@ -48,8 +48,8 @@ export class AutoBirthdayWish {
     }
   }
   async DailyReminder(username, msg) {
-    const sahil = await this.ig.user.getIdByUsername(username); // enter your friends username
-    const thread = this.ig.entity.directThread([sahil.toString()]);
+    const friend = await this.ig.user.getIdByUsername(username); // enter your friends username
+    const thread = this.ig.entity.directThread([friend.toString()]);
     await thread.broadcastText(msg);
   }
   async wish(username) {
