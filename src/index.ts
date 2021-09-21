@@ -1,11 +1,7 @@
 "use strict";
-
 import express, { Application } from "express";
 import AppRoute from "./router/index";
-// import fs from "fs";
-// import path from "path";
 import dotenv from "dotenv";
-// import * as Database from "src/DB/DB";
 import * as cron from "node-cron";
 import { AutoBirthdayWish } from "./BirthdayWish";
 import { InstaLogin } from "./class/InstaLogin";
@@ -13,7 +9,8 @@ import {
   AccountRepositoryLoginResponseLogged_in_user,
   IgApiClient,
 } from "instagram-private-api";
-import { DM } from "./class/DM";
+import { Log } from "./Log/Log";
+
 /********************************************* config *********************************************/
 const PORT = process.env.PORT || 8000;
 const app: Application = express();
@@ -22,10 +19,9 @@ app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
 dotenv.config();
-// const Db = new Database.default();
+
 /********************************************* router *********************************************/
 app.get("/", (_, res) => {
-  // res.sendFile(path.join(__dirname, "/index.html"));
   console.log("lol");
   res.json({ message: `App is running on port ${PORT}` });
 });
@@ -49,6 +45,8 @@ app.use("*", (_, res) => {
     ig
   ); //login into instagram account using username and password
   console.log("Instabot logged in successfully ");
+  const log = new Log();
+  log.loginLog();
   const BirthdayWish = new AutoBirthdayWish(ig); // create an instance of the AutoBirthdayWish class
   // const arr = ["hey", "hello", "hii", "howdy", "what's up"];
   // const dm = new DM(ig);
