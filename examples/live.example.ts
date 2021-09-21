@@ -1,5 +1,5 @@
 /* tslint:disable:no-console */
-import { IgApiClient, LiveEntity } from '..';
+import { IgApiClient, LiveEntity } from '../src';
 import Bluebird = require('bluebird');
 
 const ig = new IgApiClient();

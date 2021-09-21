@@ -1,6 +1,6 @@
 /* tslint:disable:no-console */
 import 'dotenv/config';
-import { IgApiClient } from '..';
+import { IgApiClient } from '../src';
 // tslint:disable-next-line:no-var-requires
 const shttps = require('socks-proxy-agent'); // you should install SOCKS5 client via: npm i socks-proxy-agent
 (async () => {

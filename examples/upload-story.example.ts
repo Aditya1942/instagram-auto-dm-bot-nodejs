@@ -1,4 +1,4 @@
-import { IgApiClient } from '..';
+import { IgApiClient } from '../src';
 import { readFile } from 'fs';
 import { DateTime, Duration } from 'luxon';
 

@@ -2,8 +2,10 @@
   "name": "instagram-auto-dm-bot",
   "version": "1.0.0",
   "scripts": {
-    "start": "nodemon ./src/index.ts",
-    "startJs": "nodemon index.js"
+    "start": "nodemon src/index.ts",
+    "start:prod": "node build/index.js",
+    "tsc": "tsc",
+    "prepare": "npm run tsc"
   },
   "main": "index.ts",
   "license": "MIT",

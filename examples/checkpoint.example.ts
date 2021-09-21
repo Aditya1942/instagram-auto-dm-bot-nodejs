@@ -1,6 +1,6 @@
 /* tslint:disable:no-console */
 import 'dotenv/config';
-import { IgApiClient, IgCheckpointError } from '..';
+import { IgApiClient, IgCheckpointError } from '../src';
 import Bluebird = require('bluebird');
 import inquirer = require('inquirer');
 
