@@ -12,10 +12,11 @@ router.get("/", (req: Request, res: Response): void => {
 });
 
 router.post("/", (req: Request, res: Response): void => {
-  const { username, fullname, birthDate } = req.body;
+  const { username, fullname, birthDate, dailyReminder } = req.body;
   let friend: FriendsModel = {
     username: username,
     fullname: fullname,
+    dailyReminder: dailyReminder,
     birthDate: DateTime.fromJSDate(new Date(birthDate))
       .setZone("Asia/Calcutta")
       .toFormat("yyyy-MM-dd"),
@@ -40,11 +41,12 @@ router.post("/", (req: Request, res: Response): void => {
 });
 
 router.put("/:id", (req: Request, res: Response): void => {
-  const { username, fullname, birthDate } = req.body;
+  const { username, fullname, birthDate, dailyReminder } = req.body;
   let { id } = req.params;
   let friend: FriendsModel = {
     username: username,
     fullname: fullname,
+    dailyReminder: dailyReminder,
     birthDate: DateTime.fromJSDate(new Date(birthDate))
       .setZone("Asia/Calcutta")
       .toFormat("yyyy-MM-dd"),

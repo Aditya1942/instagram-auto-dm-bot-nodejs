@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { Log } from "./Log/Log";
+import { Log } from "../Log/Log";
 
 export class AutoBirthdayWish {
   private Today = DateTime.now().setZone("Asia/Calcutta").setLocale("en");
@@ -50,7 +50,32 @@ export class AutoBirthdayWish {
   async DailyReminder(username, msg) {
     const friend = await this.ig.user.getIdByUsername(username); // enter your friends username
     const thread = this.ig.entity.directThread([friend.toString()]);
-    await thread.broadcastText(msg);
+    return await thread.broadcastText(msg);
+  }
+  async DailyReminderForAll(
+    obj: { username: string; birthDate: string }[],
+    time: number = 1
+  ) {
+    try {
+      var count = 0;
+      var interval = setInterval(async () => {
+        if (count > obj.length - 1) {
+          clearInterval(interval);
+          return Promise.resolve({ status: "success" });
+        } else {
+          let days = await this.RemaingDaysCount(obj[count].birthDate);
+          await this.DailyReminder(
+            obj[count].username,
+            `hey ${days} days left for your birthday thank you`
+          );
+          console.log(obj[count].username, obj[count].birthDate);
+          count++;
+        }
+      }, 1000 * time);
+      return Promise.resolve({ status: "success" });
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
   async wish(username) {
     try {

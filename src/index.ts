@@ -3,13 +3,14 @@ import express, { Application } from "express";
 import AppRoute from "./router/index";
 import dotenv from "dotenv";
 import * as cron from "node-cron";
-import { AutoBirthdayWish } from "./BirthdayWish";
+import { AutoBirthdayWish } from "./class/BirthdayWish";
 import { InstaLogin } from "./class/InstaLogin";
 import {
   AccountRepositoryLoginResponseLogged_in_user,
   IgApiClient,
 } from "instagram-private-api";
 import { Log } from "./Log/Log";
+import DB from "./DB/DB";
 
 /********************************************* config *********************************************/
 const PORT = process.env.PORT || 8000;
@@ -21,6 +22,7 @@ app.listen(PORT, () => {
 dotenv.config();
 
 /********************************************* router *********************************************/
+process.env.TZ = "Asia/Calcutta";
 app.get("/", (_, res) => {
   console.log("lol");
   res.json({ message: `App is running on port ${PORT}` });
@@ -37,15 +39,17 @@ app.use("*", (_, res) => {
 (async () => {
   // 2fa code get from runtime argument
   const code = process.argv[2];
-  // login class instance
+  // classes instance
   const Login = new InstaLogin(code);
+  const log = new Log();
+  const db = new DB();
   // login
   const ig: IgApiClient = await Login.init();
   const auth: AccountRepositoryLoginResponseLogged_in_user = await Login.login(
     ig
   ); //login into instagram account using username and password
   console.log("Instabot logged in successfully ");
-  const log = new Log();
+  // logging loggedin
   log.loginLog();
   const BirthdayWish = new AutoBirthdayWish(ig); // create an instance of the AutoBirthdayWish class
   // const arr = ["hey", "hello", "hii", "howdy", "what's up"];
@@ -56,14 +60,11 @@ app.use("*", (_, res) => {
   const job = cron.schedule(
     "0 0 0 * * *",
     async () => {
-      let daysLeft = BirthdayWish.RemaingDaysCount("2001/02/28"); // get the days left for the birthday from the current date to the birthday
-      const aditya = "aaditya_parmar_";
-      BirthdayWish.DailyReminder(
-        aditya,
-        `hey ${daysLeft} days left for your birthday thank you`
-      ).then(() => {}); // send the message to the user
-
-      // console.log("running a task every day at 12:00:00 AM");
+      let allfriends: any[] = db.getAll();
+      BirthdayWish.DailyReminderForAll(
+        allfriends.filter((x) => x.dailyReminder)
+      );
+      console.log("running a task every day at 12:00:00 AM");
     },
     {
       scheduled: true,
