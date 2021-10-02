@@ -116,19 +116,20 @@ app.use("*", (_, res) => {
       keepAliveTimeout: 60,
     });
   }, 4000);
-  // const job = cron.schedule(
-  //   "0 0 0 * * *",
-  //   async () => {
-  //     let allfriends: any[] = db.getAll();
-  //     BirthdayWish.DailyReminderForAll(
-  //       allfriends.filter((x) => x.dailyReminder)
-  //     );
-  //     console.log("running a task every day at 12:00:00 AM");
-  //   },
-  //   {
-  //     scheduled: true,
-  //     timezone: "Asia/Kolkata",
-  //   }
-  // );
-  // job.start();
+
+  const job = cron.schedule(
+    "0 0 0 * * *",
+    async () => {
+      let allfriends: any[] = db.getAll();
+      BirthdayWish.DailyReminderForAll(
+        allfriends.filter((x) => x.dailyReminder)
+      );
+      console.log("running a task every day at 12:00:00 AM");
+    },
+    {
+      scheduled: true,
+      timezone: "Asia/Kolkata",
+    }
+  );
+  job.start();
 })();
