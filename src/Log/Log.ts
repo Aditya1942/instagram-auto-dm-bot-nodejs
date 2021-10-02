@@ -1,8 +1,9 @@
-import fs from "fs";
 import path from "path";
+import { readFile, writeFile, access } from "fs/promises";
+
 export class Log {
-  private errorLogFile = "/ErrorLogs.js";
-  private loginLogFile = "/loginLogsFile.js";
+  private errorLogFile = path.join(__dirname, "/ErrorLogs.json");
+  private loginLogFile = path.join(__dirname, "/loginLogsFile.json");
 
   constructor() {}
   public WriteLog(Error: string) {
@@ -15,19 +16,20 @@ export class Log {
           new Date().toLocaleTimeString(),
       },
     ]);
-    fs.appendFileSync(path.join(__dirname, this.errorLogFile), err);
+    writeFile(this.errorLogFile, err);
 
     // this.Log.write(JSON.stringify(err));
   }
-  public loginLog() {
+  public loginLog(data = null) {
     let log = JSON.stringify([
       {
+        data: data,
         Date:
           new Date().toLocaleDateString() +
           " " +
           new Date().toLocaleTimeString(),
       },
     ]);
-    fs.appendFileSync(path.join(__dirname, this.loginLogFile), log);
+    writeFile(this.loginLogFile, log);
   }
 }
