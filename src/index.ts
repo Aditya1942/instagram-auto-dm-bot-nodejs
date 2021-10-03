@@ -43,8 +43,8 @@ app.use("*", (_, res) => {
   // login
 
   const ig: IgApiClientRealtime = await Login.login();
-  const auth: AccountRepositoryCurrentUserResponseUser =
-    await ig.account.currentUser();
+  // const auth: AccountRepositoryCurrentUserResponseUser =
+  //   await ig.account.currentUser();
   //login into instagram account using username and password
   console.log("Instabot logged in successfully ");
   // const realTimeEvents = new RealTimeEvents(ig);
