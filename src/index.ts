@@ -5,21 +5,11 @@ import dotenv from "dotenv";
 import * as cron from "node-cron";
 import { AutoBirthdayWish } from "./class/BirthdayWish";
 import { InstaLogin } from "./class/InstaLogin";
-import {
-  AccountRepositoryCurrentUserResponseUser,
-  IgApiClient,
-} from "instagram-private-api";
-import { Log } from "./Log/Log";
+import { AccountRepositoryCurrentUserResponseUser } from "instagram-private-api";
 import DB from "./DB/DB";
-import {
-  GraphQLSubscriptions,
-  IgApiClientRealtime,
-  SkywalkerSubscriptions,
-  withFbnsAndRealtime,
-} from "instagram_mqtt";
-import path from "path";
+import { IgApiClientRealtime } from "instagram_mqtt";
+import { RealTimeEvents } from "./class/RealTimeEvents";
 
-import { readFile, writeFile, access } from "fs/promises";
 /********************************************* config *********************************************/
 const PORT = process.env.PORT || 8000;
 const app: Application = express();
@@ -56,71 +46,16 @@ app.use("*", (_, res) => {
   const auth: AccountRepositoryCurrentUserResponseUser =
     await ig.account.currentUser();
   //login into instagram account using username and password
-  console.log(auth, "Instabot logged in successfully ");
-  // logging loggedin
+  console.log("Instabot logged in successfully ");
+  // const realTimeEvents = new RealTimeEvents(ig);
   const BirthdayWish = new AutoBirthdayWish(ig); // create an instance of the AutoBirthdayWish class
+  // realTimeEvents.init();
 
-  function logEvent(name: string) {
-    return (data: any) => console.log(name, data);
-  }
-  ig.realtime.on("direct", logEvent("direct"));
-  ig.realtime.on("message", logEvent("messageWrapper"));
-  await ig.realtime.connect({
-    // optional
-    graphQlSubs: [
-      // these are some subscriptions
-      GraphQLSubscriptions.getAppPresenceSubscription(),
-      GraphQLSubscriptions.getZeroProvisionSubscription(ig.state.phoneId),
-      GraphQLSubscriptions.getDirectStatusSubscription(),
-      GraphQLSubscriptions.getDirectTypingSubscription(ig.state.cookieUserId),
-      GraphQLSubscriptions.getAsyncAdSubscription(ig.state.cookieUserId),
-    ],
-    // optional
-    skywalkerSubs: [
-      SkywalkerSubscriptions.directSub(ig.state.cookieUserId),
-      SkywalkerSubscriptions.liveSub(ig.state.cookieUserId),
-    ],
-    // optional
-    // this enables you to get direct messages
-    irisData: await ig.feed.directInbox().request(),
-    // optional
-    // in here you can change connect options
-    // available are all properties defined in MQTToTConnectionClientInfo
-    connectOverrides: {},
-
-    // optional
-    // use this proxy
-    // socksOptions: {
-    //     type: 5,
-    //     port: 12345,
-    //     host: '...'
-    // }
-  });
-
-  // simulate turning the device off after 2s and turning it back on after another 2s
-  setTimeout(() => {
-    console.log("Device off");
-    // from now on, you won't receive any realtime-data as you "aren't in the app"
-    // the keepAliveTimeout is somehow a 'constant' by instagram
-    ig.realtime.direct.sendForegroundState({
-      inForegroundApp: false,
-      inForegroundDevice: false,
-      keepAliveTimeout: 900,
-    });
-  }, 2000);
-  setTimeout(() => {
-    console.log("In App");
-    ig.realtime.direct.sendForegroundState({
-      inForegroundApp: true,
-      inForegroundDevice: true,
-      keepAliveTimeout: 60,
-    });
-  }, 4000);
-
-  const job = cron.schedule(
-    "0 0 0 * * *",
-    async () => {
+  cron.schedule(
+    " 0 0 * * * ",
+    async function () {
       let allfriends: any[] = db.getAll();
+      await db.refresh();
       BirthdayWish.DailyReminderForAll(
         allfriends.filter((x) => x.dailyReminder)
       );
@@ -131,5 +66,4 @@ app.use("*", (_, res) => {
       timezone: "Asia/Kolkata",
     }
   );
-  job.start();
 })();

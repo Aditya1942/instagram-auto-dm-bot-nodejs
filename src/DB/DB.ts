@@ -3,15 +3,28 @@ import path from "path";
 import { DbModel } from "../models/DbModel";
 import { DateTime } from "luxon";
 import { FriendsModel } from "src/models/friendsModel";
+import { readFile, writeFile, access } from "fs/promises";
 
 export default class DB {
   public static dbFile = __dirname + "/database.json";
   private db;
   constructor() {
-    this.db = JSON.parse(fs.readFileSync(path.join(DB.dbFile), "utf8"));
+    readFile(DB.dbFile, "utf8")
+      .then((data) => {
+        this.db = JSON.parse(data);
+      })
+      .catch((err) => {
+        throw err;
+      });
   }
   refresh() {
-    this.db = JSON.parse(fs.readFileSync(path.join(DB.dbFile), "utf8"));
+    readFile(DB.dbFile, "utf8")
+      .then((data) => {
+        this.db = JSON.parse(data);
+      })
+      .catch((err) => {
+        throw err;
+      });
   }
   get(id) {
     return this.db.friends.find((friend) => {
@@ -72,13 +85,13 @@ export default class DB {
   async save() {
     let data = JSON.stringify(this.db);
     return new Promise(async function (resolve, reject) {
-      try {
-        fs.writeFileSync(DB.dbFile, data);
-        resolve(data);
-      } catch (error) {
-        console.error("DB.ts line 48", error);
-        reject(error);
-      }
+      await writeFile(DB.dbFile, data)
+        .then(() => {
+          resolve(data);
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
   }
 }

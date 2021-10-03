@@ -30,12 +30,14 @@ export class InstaLogin {
       const serialized = await this.ig.state.serialize();
       delete serialized.constants;
       const data = JSON.stringify(serialized);
+
       this.save(data);
       this.log.loginLog(data);
     });
     try {
       if (!(await this.tryLoadSession())) {
         await this.ig.account.login(this.IG_USERNAME, this.IG_PASSWORD);
+        console.log("Logging in with credentials");
       }
       return this.ig;
     } catch (e) {

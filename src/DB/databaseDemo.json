@@ -1,0 +1,20 @@
+{
+  "friends": [
+    {
+      "id": 1,
+      "username": "sahilhalani10",
+      "fullname": "sahil halani",
+      "birthDate": "2000-12-23",
+      "dailyReminder": false,
+      "DateOfCreation": "2021-09-13T19:19:50.810+05:30"
+    },
+    {
+      "id": 2,
+      "username": "aaditya_parmar_",
+      "fullname": "Aditya parmar",
+      "dailyReminder": true,
+      "birthDate": "2001-02-28",
+      "DateOfCreation": "2021-09-28T11:26:19.754+05:30"
+    }
+  ]
+}
