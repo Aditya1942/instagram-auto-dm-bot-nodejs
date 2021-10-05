@@ -22,7 +22,6 @@ dotenv.config();
 /********************************************* router *********************************************/
 process.env.TZ = "Asia/Calcutta";
 app.get("/", (_, res) => {
-  console.log("lol");
   res.json({ message: `App is running on port ${PORT}` });
 });
 app.use("/api", AppRoute);
@@ -42,15 +41,23 @@ app.use("*", (_, res) => {
   const db = new DB();
   // login
 
-  const ig: IgApiClientRealtime = await Login.login();
+  let ig: IgApiClientRealtime;
+
+  Login.login()
+    .then((user) => {
+      ig = user;
+      console.log("Instabot logged in successfully ");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   // const auth: AccountRepositoryCurrentUserResponseUser =
   //   await ig.account.currentUser();
   //login into instagram account using username and password
-  console.log("Instabot logged in successfully ");
   // const realTimeEvents = new RealTimeEvents(ig);
   const BirthdayWish = new AutoBirthdayWish(ig); // create an instance of the AutoBirthdayWish class
   // realTimeEvents.init();
-
+  // console.log(auth);
   cron.schedule(
     " 0 0 * * * ",
     async function () {

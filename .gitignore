@@ -3,3 +3,4 @@ node_modules
 /src/DB/database.json
 oldJsFiles
 .vscode
+build

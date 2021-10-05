@@ -4,8 +4,9 @@
   "scripts": {
     "start": "nodemon src/index.ts",
     "start:prod": "node build/index.js",
+    "startP": "node build/index.js",
     "tsc": "tsc",
-    "prepare": "npm run tsc"
+    "build": "npm run tsc"
   },
   "main": "index.ts",
   "license": "MIT",
