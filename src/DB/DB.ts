@@ -14,7 +14,14 @@ export default class DB {
         this.db = JSON.parse(data);
       })
       .catch((err) => {
-        throw err;
+        let demo = {
+          friends: [],
+        };
+
+        fs.writeFile(DB.dbFile, JSON.stringify(demo), () => {
+          console.log("DB json created");
+        });
+        // throw err;
       });
   }
   refresh() {

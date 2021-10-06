@@ -41,23 +41,14 @@ app.use("*", (_, res) => {
   const db = new DB();
   // login
 
-  let ig: IgApiClientRealtime;
+  const ig: IgApiClientRealtime = await Login.login();
 
-  Login.login()
-    .then((user) => {
-      ig = user;
-      console.log("Instabot logged in successfully ");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  // const auth: AccountRepositoryCurrentUserResponseUser =
-  //   await ig.account.currentUser();
+  const auth = await ig.account.currentUser();
+  console.log(auth.username);
   //login into instagram account using username and password
   // const realTimeEvents = new RealTimeEvents(ig);
   const BirthdayWish = new AutoBirthdayWish(ig); // create an instance of the AutoBirthdayWish class
   // realTimeEvents.init();
-  // console.log(auth);
   cron.schedule(
     " 0 0 * * * ",
     async function () {
