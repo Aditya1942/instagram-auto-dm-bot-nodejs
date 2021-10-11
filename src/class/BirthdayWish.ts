@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import { Log } from "../Log/Log";
 
 export class AutoBirthdayWish {
-  private Today = DateTime.now().setZone("Asia/Calcutta").setLocale("en");
+  private Today;
 
   private WishMessage: string =
     "Hey! 😊 wish you a very happy birthday🎂🎂 may god bless you😇";
@@ -12,6 +12,7 @@ export class AutoBirthdayWish {
     this.ig = ig;
   }
   RemaingDaysCount(BirthdayDate): any {
+    this.Today = DateTime.now().setZone("Asia/Calcutta").setLocale("en");
     let Bday = DateTime.fromJSDate(new Date(BirthdayDate))
       .setZone("Asia/Calcutta")
       .setLocale("en");
@@ -46,6 +47,10 @@ export class AutoBirthdayWish {
     } else {
       return days + 0;
     }
+  }
+  today() {
+    this.Today = DateTime.now().setZone("Asia/Calcutta").setLocale("en");
+    return this.Today.toFormat("F");
   }
   async DailyReminder(username, msg) {
     const friend = await this.ig.user.getIdByUsername(username); // enter your friends username
