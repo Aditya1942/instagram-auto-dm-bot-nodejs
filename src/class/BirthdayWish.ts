@@ -64,17 +64,18 @@ export class AutoBirthdayWish {
     try {
       var count = 0;
       var interval = setInterval(async () => {
-        if (count > obj.length - 1) {
-          clearInterval(interval);
-          return Promise.resolve({ status: "success" });
-        } else {
+        // if count is less than the length of the array
+        if (count <= obj.length - 1) {
           let days = await this.RemaingDaysCount(obj[count].birthDate);
           await this.DailyReminder(
             obj[count].username,
             `hey ${days} days left for your birthday thank you`
           );
-          console.log(obj[count].username, obj[count].birthDate);
+          console.log(count, obj[count].username, obj[count].birthDate);
           count++;
+        } else {
+          clearInterval(interval);
+          return Promise.resolve({ status: "success" });
         }
       }, 1000 * time);
       return Promise.resolve({ status: "success" });

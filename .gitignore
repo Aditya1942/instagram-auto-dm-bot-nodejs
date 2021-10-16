@@ -6,3 +6,4 @@ oldJsFiles
 build
 /src/Log/loginState.json
 /src/Log/loginLogsFile.json
+/src/oldJsFiles

@@ -45,24 +45,11 @@ app.use("*", (_, res) => {
   const ig: IgApiClientRealtime = await Login.login();
 
   const auth = await ig.account.currentUser();
-  console.log(auth.username);
+  console.log("logged in as ", auth.username);
   //login into instagram account using username and password
   // const realTimeEvents = new RealTimeEvents(ig);
   const BirthdayWish = new AutoBirthdayWish(ig); // create an instance of the AutoBirthdayWish class
-  cron.schedule(
-    "* * * * * * ",
-    async function () {
-      // let allfriends: any[] = db.getAll();
-      // await db.refresh();
-      const Today = DateTime.now().setZone("Asia/Calcutta").setLocale("en");
-      console.log(BirthdayWish.today());
-      // console.log("running a task every day at 12:00:00 AM", Today);
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Kolkata",
-    }
-  );
+  let allfriends: any[] = db.getAll();
   // realTimeEvents.init();
   cron.schedule(
     " 0 0 * * * ",
