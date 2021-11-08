@@ -4,10 +4,11 @@ import {
   SkywalkerSubscriptions,
   withFbnsAndRealtime,
 } from "instagram_mqtt";
+import { Subject } from "rxjs";
 
 export class RealTimeEvents {
   private ig: IgApiClientRealtime;
-
+  dm: Subject<any> = new Subject();
   constructor(ig: IgApiClientRealtime) {
     this.ig = ig;
   }
@@ -70,7 +71,11 @@ export class RealTimeEvents {
       });
     }, 4000);
   }
+
   private logEvent(name: string) {
-    return (data: any) => console.log(name, data);
+    return (data: any) => {
+      console.log(name, data);
+      this.dm.next({ data, name });
+    };
   }
 }

@@ -1,8 +1,11 @@
 import { DateTime } from "luxon";
 import { Log } from "../Log/Log";
+import * as cron from "node-cron";
+import DB from "src/DB/DB";
 
 export class AutoBirthdayWish {
   private Today;
+  db: DB;
 
   private WishMessage: string =
     "Hey! 😊 wish you a very happy birthday🎂🎂 may god bless you😇";
@@ -10,6 +13,7 @@ export class AutoBirthdayWish {
   log = new Log();
   constructor(ig) {
     this.ig = ig;
+    this.db = new DB();
   }
   RemaingDaysCount(BirthdayDate): any {
     this.Today = DateTime.now().setZone("Asia/Calcutta").setLocale("en");
@@ -57,12 +61,7 @@ export class AutoBirthdayWish {
     const thread = this.ig.entity.directThread([friend.toString()]);
     return await thread.broadcastText(msg);
   }
-  // let days = await this.RemaingDaysCount(obj[count].birthDate);
-  // await this.DailyReminder(
-  //   obj[count].username,
-  //   `hey ${days} days left for your birthday thank you`
-  // );
-  // console.log(count, obj[count].username, obj[count].birthDate);
+
   async DailyReminderForAll(
     arr: { username: string; birthDate: string }[],
     time: number = 1
@@ -99,5 +98,21 @@ export class AutoBirthdayWish {
       this.log.WriteLog(error.message);
       return error.message;
     }
+  }
+
+  schedule() {
+    cron.schedule(
+      " 0 0 * * * ",
+      async function () {
+        let allfriends: any[] = this.db.getAll();
+        await this.db.refresh();
+        this.DailyReminderForAll(allfriends.filter((x) => x.dailyReminder));
+        console.log("running a task every day at 12:00:00 AM");
+      },
+      {
+        scheduled: true,
+        timezone: "Asia/Kolkata",
+      }
+    );
   }
 }

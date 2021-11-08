@@ -2,14 +2,10 @@
 import express, { Application } from "express";
 import AppRoute from "./router/index";
 import dotenv from "dotenv";
-import * as cron from "node-cron";
 import { AutoBirthdayWish } from "./class/BirthdayWish";
 import { InstaLogin } from "./class/InstaLogin";
-import { AccountRepositoryCurrentUserResponseUser } from "instagram-private-api";
-import DB from "./DB/DB";
 import { IgApiClientRealtime } from "instagram_mqtt";
 import { RealTimeEvents } from "./class/RealTimeEvents";
-import { DateTime } from "luxon";
 
 /********************************************* config *********************************************/
 const PORT = process.env.PORT || 8000;
@@ -39,33 +35,22 @@ app.use("*", (_, res) => {
   const code = process.argv[2];
   // classes instance
   const Login = new InstaLogin(code);
-  const db = new DB();
   // login
 
+  //login into instagram account using username and password
   const ig: IgApiClientRealtime = await Login.login();
-
   const auth = await ig.account.currentUser();
   console.log("logged in as ", auth.username);
-  //login into instagram account using username and password
-  // const realTimeEvents = new RealTimeEvents(ig);
+  // to automatically send birthday wishes to your friends
   const BirthdayWish = new AutoBirthdayWish(ig); // create an instance of the AutoBirthdayWish class
-  let allfriends: any[] = db.getAll();
-  await db.refresh();
-  BirthdayWish.DailyReminderForAll(allfriends.filter((x) => x.dailyReminder));
+  BirthdayWish.schedule(); // schedule the job for midnight 12:00 AM
+
+  // // initial real Time dm event
+  // const realTimeEvents = new RealTimeEvents(ig);
   // realTimeEvents.init();
-  cron.schedule(
-    " 0 0 * * * ",
-    async function () {
-      let allfriends: any[] = db.getAll();
-      await db.refresh();
-      BirthdayWish.DailyReminderForAll(
-        allfriends.filter((x) => x.dailyReminder)
-      );
-      console.log("running a task every day at 12:00:00 AM");
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Kolkata",
-    }
-  );
+
+  // // subcribe to dm;
+  // realTimeEvents.dm.subscribe((data) => {
+  //   console.log("home", data);
+  // });
 })();
