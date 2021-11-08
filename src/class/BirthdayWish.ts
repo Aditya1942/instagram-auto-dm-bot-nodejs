@@ -70,6 +70,12 @@ export class AutoBirthdayWish {
       var count = -1;
       var interval = setInterval(async () => {
         count++;
+        let days = await this.RemaingDaysCount(arr[count].birthDate);
+        await this.DailyReminder(
+          arr[count].username,
+          `hey ${days} days left for your birthday thank you`
+        );
+        console.log(count, arr[count].username, arr[count].birthDate);
         if (count >= arr.length - 1) {
           clearInterval(interval);
           return Promise.resolve({ status: "success" });

@@ -45,7 +45,7 @@ app.use("*", (_, res) => {
   const BirthdayWish = new AutoBirthdayWish(ig); // create an instance of the AutoBirthdayWish class
   BirthdayWish.schedule(); // schedule the job for midnight 12:00 AM
 
-  // // initial real Time dm event
+  // initial real Time dm event
   // const realTimeEvents = new RealTimeEvents(ig);
   // realTimeEvents.init();
 

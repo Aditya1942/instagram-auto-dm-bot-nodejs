@@ -23,7 +23,6 @@ export class Log {
   public loginLog(data = null) {
     let log = JSON.stringify([
       {
-        data: data,
         Date:
           new Date().toLocaleDateString() +
           " " +

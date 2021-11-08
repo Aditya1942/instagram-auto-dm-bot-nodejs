@@ -4,6 +4,5 @@ node_modules
 oldJsFiles
 .vscode
 build
-/src/Log/loginState.json
-/src/Log/loginLogsFile.json
-/src/oldJsFiles
+src/Log/loginState.json
+src/oldJsFiles
