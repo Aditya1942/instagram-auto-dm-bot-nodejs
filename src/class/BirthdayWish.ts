@@ -57,23 +57,21 @@ export class AutoBirthdayWish {
     const thread = this.ig.entity.directThread([friend.toString()]);
     return await thread.broadcastText(msg);
   }
+  // let days = await this.RemaingDaysCount(obj[count].birthDate);
+  // await this.DailyReminder(
+  //   obj[count].username,
+  //   `hey ${days} days left for your birthday thank you`
+  // );
+  // console.log(count, obj[count].username, obj[count].birthDate);
   async DailyReminderForAll(
-    obj: { username: string; birthDate: string }[],
+    arr: { username: string; birthDate: string }[],
     time: number = 1
   ) {
     try {
-      var count = 0;
+      var count = -1;
       var interval = setInterval(async () => {
-        // if count is less than the length of the array
-        if (count <= obj.length - 1) {
-          let days = await this.RemaingDaysCount(obj[count].birthDate);
-          await this.DailyReminder(
-            obj[count].username,
-            `hey ${days} days left for your birthday thank you`
-          );
-          console.log(count, obj[count].username, obj[count].birthDate);
-          count++;
-        } else {
+        count++;
+        if (count >= arr.length - 1) {
           clearInterval(interval);
           return Promise.resolve({ status: "success" });
         }

@@ -50,6 +50,8 @@ app.use("*", (_, res) => {
   // const realTimeEvents = new RealTimeEvents(ig);
   const BirthdayWish = new AutoBirthdayWish(ig); // create an instance of the AutoBirthdayWish class
   let allfriends: any[] = db.getAll();
+  await db.refresh();
+  BirthdayWish.DailyReminderForAll(allfriends.filter((x) => x.dailyReminder));
   // realTimeEvents.init();
   cron.schedule(
     " 0 0 * * * ",
